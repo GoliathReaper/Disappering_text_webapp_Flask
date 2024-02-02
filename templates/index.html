@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Disappearing Text</title>
+</head>
+<body>
+    <form>
+        <div class="form-group" id="baz" style="opacity: 1;">
+        <label for="text">Example textarea</label>
+        <textarea class="form-control" name="text" id="text" rows="3"></textarea>
+        </div>
+    </form>
+    <script>
+        // Function to send text updates to the server
+        function sendTextUpdate() {
+            var textInput = document.getElementById('text');
+            var text = textInput.value;
+
+            // Use AJAX to send data to the server
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/update_text', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('text=' + encodeURIComponent(text));
+        }
+
+        // Function to handle live updates from the server (optional)
+        function handleUpdateText(response) {
+            console.log('Server response:', response);
+        }
+
+        // Listen for input events on the text area
+        var textInput = document.getElementById('text');
+        textInput.addEventListener('input', sendTextUpdate);
+
+
+    </script>
+    <script>
+        // Change CSS dynamically
+        function updateCSS() {
+            $.ajax({
+                url: "{{ url_for('last_line') }}",
+                method: 'GET',
+                success: function(data) {
+                    $("#baz").css("opacity", data);
+                    console.log("success")
+                }
+            });
+        }
+        setInterval(updateCSS, 1000);
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
